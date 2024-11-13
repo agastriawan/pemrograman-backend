@@ -17,7 +17,6 @@ class PegawaiController extends Controller
         if ($pegawai->isEmpty()) {
             return response()->json([
                 'message' => 'Data is empty',
-                'data' => []
             ], 200);
         }
 
@@ -36,10 +35,10 @@ class PegawaiController extends Controller
         // Membuat Validasi untuk inputan setiap fields
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'gender' => 'required|in:male,female',
+            'gender' => 'required',
             'phone' => 'required|string|max:15',
             'address' => 'required|string',
-            'email' => 'required|email|unique:pegawai,email',
+            'email' => 'required|email|unique:employees,email',
             'status' => 'required|string',
             'hired_on' => 'required|date',
         ]);
@@ -99,8 +98,18 @@ class PegawaiController extends Controller
             ], 404);
         }
 
-        // Mengupdate data pegawai
-        $pegawai->update($pegawai);
+        $input = [
+            'name' => $request->name ?? $pegawai->name,
+            'gender' =>  $request->gender ?? $pegawai->gender,
+            'phone' =>  $request->phone ?? $pegawai->phone,
+            'address' => $request->address ?? $pegawai->address,
+            'email' => $request->email ?? $pegawai->email,
+            'status' =>  $request->status ?? $pegawai->status,
+            'hired_on' =>  $request->hired_on ?? $pegawai->hired_on,
+        ];
+
+        // Ubah data pegawai
+        $pegawai->update($input);
 
         // Menyiapkan Data Response
         $data = [
@@ -137,7 +146,6 @@ class PegawaiController extends Controller
         if ($pegawai->isEmpty()) {
             return response()->json([
                 'message' => 'Resource Not Found',
-                'data' => []
             ], 404);
         }
 
